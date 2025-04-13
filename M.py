@@ -1,3 +1,9 @@
+#tabish.fayaz@stud.th-deg.de
+#omar.nasr@stud.th-deg.de
+#waled.mahaya@stud.th-deg.de
+
+### View.py is he main entry point to our program ###
+### This Program needs config_manager.json file to run. ####
 import json
 import random
 import string
@@ -22,7 +28,7 @@ def search(title='', author='',year='',statuses=[]):
     global result
     result.clear()
     for item in opener(file_name_fetcher()):
-        if (title in item['title'] and author in item['author'] and year in item['year'] and item['status'] in statuses):
+        if (title in item['title'] and author in item['author'] and year in str(item['year']) and item['status'] in statuses):
             print(f"Title: {item['title']}, Author: {item['author']}, Year: {item['year']}, Status: {item['status']}")
             result.append(item)
 

@@ -1,13 +1,23 @@
-#Waled.mahaya@stud.th-deg.de
 #tabish.fayaz@stud.th-deg.de
+#omar.nasr@stud.th-deg.de
+#waled.mahaya@stud.th-deg.de
+
+### View.py is he main entry point to our program ###
 ### This Program needs config_manager.json file to run. ####
 
 from tkinter import *
+import json
 import M
 import C
 import threading
+import ocrwindow
+from tkinter import messagebox
 
+def configreader():
+     with open ('config_manager.json') as f:
+            return(json.load(f))
 
+isopticalopen = False
 root = Tk()
 scrollbar = Scrollbar(root)
 scrollbar.grid( row=2,column=2 , sticky='ns')
@@ -113,17 +123,22 @@ def update(file_name=C.file_name_fetcher()):####################################
         mylist.insert(END, f'{book['title']}/{book["author"]}/{book["year"]}/{book['status']}')
 update()
 
+
 def searchupdate():
 
     for book in M.result:
         searchresults.insert(END, f'{book['title']}/{book["author"]}/{book["year"]}/{book['status']}')
 
+    if len(M.result) == 0:
+        messagebox.showinfo("No Book Found", "Unfortunately no book was found, create a new book")
+
+
 
 searchform = Frame(root)
 searchresults = Listbox(searchform, yscrollcommand = scrollbar.set , width=140)
 searchresults.grid(row=2,column=2)
-Button(searchform, text= 'Cancel', command = lambda : searchformcloser()).grid(row=100, column=3)
-Button(searchform, text= 'Search', command = lambda : (M.search(title=searchtitle.get(), author=searchauthor.get(), year=searchyear.get(), statuses=get_selected_statuses()), searchresults.delete(0, END),searchupdate())).grid(row=100, column=2)
+Button(searchform, text= 'Cancel', command = lambda : searchformcloser()).grid(row=53, column=6)
+Button(searchform, text= 'Search', command = lambda : (M.search(title=searchtitle.get(), author=searchauthor.get(), year=searchyear.get(), statuses=get_selected_statuses()), searchresults.delete(0, END),searchupdate(),)).grid(row=53, column=5)
 searchresults.bind("<Double-Button-1>", lambda event: (openstatusdialog(), ))
 
 
@@ -183,11 +198,36 @@ def searchformopener():
 def searchformcloser():
     searchform.grid_forget()
 
+opticalform = Frame(searchform)
 
+def opticalformopener():
+    global isopticalopen
+    if not isopticalopen:
+        opticalform.grid(column=2, row=60)
+        isopticalopen=True
+    else:
+        opticalform.grid_forget()
+        isopticalopen=False
+
+opticlapath = Entry(opticalform, width=50)
+opticlapath.grid(column=5,row=5)
+opticallabel = Label(opticalform, text='Absolute Path:')
+opticallabel.grid(column=4,row=5)
+opticalok = Button(opticalform, text='Confirm', command= lambda: ocrwindow.finalboss(rf"{opticlapath.get()}", root))
+opticalok.grid(row=5, column=6)
+opticaltitle = Button(opticalform, text='Update&Search', command= lambda: (searchtitle.delete(0,END),searchtitle.insert(0,ocrwindow.datawithin['ocr']),M.search(title=searchtitle.get(), author=searchauthor.get(), year=searchyear.get(), statuses=get_selected_statuses()), searchresults.delete(0, END),searchupdate()))
+opticaltitle.grid(row=5, column=7)
+
+
+#main.finalboss(r"C:\Users\lodar\Desktop\new_manager\ocrss\test.png", root)
+
+optics = Button(searchform, text='Toggle Optical Search', command=lambda: opticalformopener())
+
+optics.grid(row=53,column=1)
 
 mylist.grid( column=1,row=2)
 scrollbar.config(command = mylist.yview )
-
+print('final'+ocrwindow.finaltext)
 
 
 mainloop()

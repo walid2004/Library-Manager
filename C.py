@@ -1,3 +1,10 @@
+#tabish.fayaz@stud.th-deg.de
+#omar.nasr@stud.th-deg.de
+#waled.mahaya@stud.th-deg.de
+
+### View.py is he main entry point to our program ###
+### This Program needs config_manager.json file to run. ####
+
 import M
 import json
 
